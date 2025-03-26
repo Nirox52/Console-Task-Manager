@@ -78,7 +78,7 @@ COMMANDS={
     '/',
     'cal',
     'dd',
-    '',
+    'utt',
     '',
     '',
     '',
@@ -223,7 +223,8 @@ HELP_BOX='''
 14)srw - for sort tasks without smth
 15)Many lines /
 16)sett settings block
-17)dd - delete done tasks from list\s
+17)dd - delete done tasks from list's
+18)utt - update today's tasks date
 
 '''
 
@@ -295,6 +296,9 @@ sett - open settings block
 0 option needs to set default sort mode to sort tasks with opening program
 1 option needs to creare short commands to comands you often use
         ''',
+        "utt":'''
+utt - Update today tasks date
+        '''
         }
 
 DEF_SETTINGS = {

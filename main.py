@@ -153,7 +153,39 @@ Or try [bold yellow]help[/] command to know more about all commands.
 
     def __checkTaskDates(self,data):
         for category in data:  # Перебираем все ключи верхнего уровня
-            if category != 'lastId'and category!='today' and category != 'tommorow' and category != 'yesterday':
+            if category != 'lastId' and category =='today':
+                for priority in data[category]:  # Перебираем уровни приоритетов
+                    task_ids_to_del =[]
+                    for i,task in enumerate(data[category][priority]):  # Перебираем задачи
+                        if task['createAt']!="":
+                            if task['createAt'] == ( self.TODAY-timedelta(days=1) ).strftime("%Y-%m-%d") and priority!="yesterday":
+                                # del data[category][priority][i]
+                                task_ids_to_del.append(i)
+                                task['due'] = 'yesterday'
+                                data['yesterday'][priority].append(task)
+                                DONT_CLEAR_MESS.append(f'Задача [red]{task["name"]}[/] истекла вчера')
+                        if task['repitOn'] !="":
+                            pass
+                    if task_ids_to_del:
+                        data[category][priority] =self.__del_tasks_by_ids(task_ids_to_del,data[category][priority]) 
+            
+            elif category != 'lastId' and category =='tommorow':
+                for priority in data[category]:  # Перебираем уровни приоритетов
+                    task_ids_to_del =[]
+                    for i,task in enumerate(data[category][priority]):  # Перебираем задачи
+                        if task['createAt']!="":
+                            if task['createAt'] == self.TODAY.strftime("%Y-%m-%d") and priority!='today':
+                                # del data[category][priority][i]
+                                task_ids_to_del.append(i)
+                                task['due'] = 'today'
+                                data['today'][priority].append(task)
+                                DONT_CLEAR_MESS.append(f'Задача [gold1]{task["name"]}[/] истеккает сегодня')
+                        if task['repitOn'] !="":
+                            pass
+                    if task_ids_to_del:
+                        data[category][priority] =self.__del_tasks_by_ids(task_ids_to_del,data[category][priority]) 
+            
+            elif category != 'lastId'and category!='today' and category != 'tommorow' and category != 'yesterday':
                 for priority in data[category]:  # Перебираем уровни приоритетов
                     task_ids_to_del =[]
                     for i,task in enumerate(data[category][priority]):  # Перебираем задачи
@@ -678,6 +710,9 @@ Or try [bold yellow]help[/] command to know more about all commands.
                         task_data = task_from_data
                     except Exception as err:
                         self.errorConsole.print(err)
+
+                case "utt":
+                    task_data = self.__checkTaskDates(task_data)
 
                 case "help":
                     if len(command_parts)==1:
